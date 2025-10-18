@@ -55,9 +55,13 @@ public class Ejercicios {
         // cambiarNombre(doc);
 
         // Ejercicio10
-        añadirDirector(doc);
-        grabarDOM(doc, ruta);
-       
+        // añadirDirector(doc);
+        
+        //Ejercicio11
+        // String titulo = "Fargo";
+        // borrarPeliculas(doc, titulo);
+        // grabarDOM(doc, ruta);
+        
 
     }
 
@@ -321,6 +325,33 @@ public class Ejercicios {
             }
 
         }
+
+    }
+
+
+    public static void borrarPeliculas(Document doc, String titulo){
+        NodeList peliculas = doc.getElementsByTagName("pelicula");
+
+        for (int i = 0; i < peliculas.getLength(); i++) {
+            Element pelicula = (Element) peliculas.item(i);
+
+            String tit = pelicula.getElementsByTagName("titulo").item(0).getTextContent();
+
+            if (tit.equalsIgnoreCase(titulo)) {
+
+                pelicula.getParentNode().removeChild(pelicula);
+                System.out.println("Pelicula borrada");
+
+
+                
+            }
+            
+        }
+
+    }
+
+    public static void nuevoDoc(){
+        
 
     }
 
