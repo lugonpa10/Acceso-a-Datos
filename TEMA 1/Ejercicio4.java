@@ -13,9 +13,7 @@ public class Ejercicio4 {
                 frecuencias[i]++;
                 System.out.println(i);
 
-                for ( i = 0; i<=frecuencias) {
-                    
-                }
+              
             }
 
         } catch (IOException e) {
