@@ -53,9 +53,11 @@ public class Ejercicios {
 
         // Ejercicio9
         // cambiarNombre(doc);
-        // grabarDOM(doc, ruta);
 
         // Ejercicio10
+        añadirDirector(doc);
+        grabarDOM(doc, ruta);
+       
 
     }
 
@@ -249,7 +251,7 @@ public class Ejercicios {
 
         Element nodoDirector = doc.createElement("director");
         Element nodoNombre = doc.createElement("nombre");
-        Element nodoApellidos = doc.createElement("apellidos");
+        Element nodoApellidos = doc.createElement("apellido");
 
         nodoPelicula.appendChild(nodoDirector);
         nodoDirector.appendChild(nodoNombre);
@@ -298,27 +300,32 @@ public class Ejercicios {
 
             Element pelicula = (Element) peliculas.item(i);
 
-            NodeList titulos = pelicula.getElementsByTagName("titulo");
-            for (int j = 0; j < titulos.getLength(); j++) {
-                Element titulo = (Element) titulos.item(j);
+            String nomTit = pelicula.getElementsByTagName("titulo").item(0).getTextContent();
 
-                String nomTit = titulo.getElementsByTagName("titulo").item(0).getTextContent();
-                
-                if (nomTit.equals("Dune")) {
-                    
-                }
+            if (nomTit.equalsIgnoreCase("Dune")) {
 
+                Element nodoDirector = doc.createElement("director");
+                Element nodoNombre = doc.createElement("nombre");
+                Element nodoApellido = doc.createElement("apellido");
 
-                
-                
+                Text textNombre = doc.createTextNode("Alfredo");
+                nodoNombre.appendChild(textNombre);
+                Text textApellido = doc.createTextNode("Landa");
+                nodoApellido.appendChild(textApellido);
+
+                nodoDirector.appendChild(nodoNombre);
+                nodoDirector.appendChild(nodoApellido);
+
+                pelicula.appendChild(nodoDirector);
+
             }
 
-            
         }
 
-
-
     }
+
+
+    
 
     public static void grabarDOM(Document document, String ficheroSalida)
             throws ClassNotFoundException, InstantiationException,
