@@ -21,12 +21,12 @@ public class Ejercicios {
     public static void main(String[] args)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException, FileNotFoundException, ParserConfigurationException {
         String ruta = "peliculas.xml";
-        // Document doc = creaArbol(ruta);
+        Document doc = creaArbol(ruta);
 
         // Ejercicio2
         // titulos(doc);
 
-        // Ejercicio3
+       // Ejercicio3
         // directores(doc);
 
         // Ejercicio5
@@ -38,41 +38,41 @@ public class Ejercicios {
         // Ejercicio7
         // String titulo = "Matrix";
         // String val = "10";
-        // añadirAtributo(doc, titulo, val);
+        // // añadirAtributo(doc, titulo, val);
         // eliminarAtributo(doc,titulo,val);
-        // grabarDOM(doc, ruta);
-
+        
         // Ejercicio8
-        // String titulo = "Depredador";
+        // String titulo = "interstellar";
         // String gen = "accion";
         // String idioma = "ing";
         // String dirNom = "John";
         // String dirApe = "Tiernan";
-
+        
         // String anho = "1987";
         // añadirDepredador(doc, titulo, gen, dirNom, dirApe, idioma, anho);
-
+        
         // Ejercicio9
         // cambiarNombre(doc);
-
+        
         // Ejercicio10
         // añadirDirector(doc);
-
+        
         // Ejercicio11
-        // String titulo = "Fargo";
+        // String titulo = "Dune";
         // borrarPeliculas(doc, titulo);
-
-        // Ejercicio12
-        String ruta2 = "compañia.xml";
-        Document doc2 = creaArbol(ruta2);
-        if (doc2 == null) {
-            DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
-            factoria.setIgnoringComments(true);
-            DocumentBuilder builder = factoria.newDocumentBuilder();
-            doc2 = builder.newDocument();
-        }
-        nuevoDoc(doc2, "lucas", "gonzalez", "Lugonpa", "1000");
-        grabarDOM(doc2, ruta2);
+        
+        // // Ejercicio12
+        // String ruta2 = "compañia.xml";
+        // Document doc2 = creaArbol(ruta2);
+        // if (doc2 == null) {
+        //         DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
+        //         factoria.setIgnoringComments(true);
+        //         DocumentBuilder builder = factoria.newDocumentBuilder();
+        //         doc2 = builder.newDocument();
+        //     }
+        //     nuevoDoc(doc2, "lucas", "gonzalez", "Lugonpa", "1000");
+        //     grabarDOM(doc2, ruta2);
+            grabarDOM(doc, ruta);
     }
     public static void nuevoDoc(Document doc, String nombre, String apellidos, String alcume, String salario) {
 
@@ -363,7 +363,7 @@ public class Ejercicios {
                 Element nodoNombre = doc.createElement("nombre");
                 Element nodoApellido = doc.createElement("apellido");
 
-                Text textNombre = doc.createTextNode("Alfredo");
+                Text textNombre = doc.createTextNode("Alfredo lama");
                 nodoNombre.appendChild(textNombre);
                 Text textApellido = doc.createTextNode("Landa");
                 nodoApellido.appendChild(textApellido);
