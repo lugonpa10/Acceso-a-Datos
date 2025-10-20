@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 // import javax.swing.text.html.parser.Element; // Remove this line
@@ -18,9 +19,9 @@ import org.w3c.dom.ls.LSSerializer;
 
 public class Ejercicios {
     public static void main(String[] args)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, FileNotFoundException {
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, FileNotFoundException, ParserConfigurationException {
         String ruta = "peliculas.xml";
-        Document doc = creaArbol(ruta);
+        // Document doc = creaArbol(ruta);
 
         // Ejercicio2
         // titulos(doc);
@@ -60,7 +61,58 @@ public class Ejercicios {
         // Ejercicio11
         // String titulo = "Fargo";
         // borrarPeliculas(doc, titulo);
-        // grabarDOM(doc, ruta);
+
+        // Ejercicio12
+        String ruta2 = "compañia.xml";
+        Document doc2 = creaArbol(ruta2);
+        if (doc2 == null) {
+            DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
+            factoria.setIgnoringComments(true);
+            DocumentBuilder builder = factoria.newDocumentBuilder();
+            doc2 = builder.newDocument();
+        }
+        nuevoDoc(doc2, "lucas", "gonzalez", "Lugonpa", "1000");
+        grabarDOM(doc2, ruta2);
+    }
+    public static void nuevoDoc(Document doc, String nombre, String apellidos, String alcume, String salario) {
+
+        Element nodoCompañia = doc.createElement("compañia");
+
+        doc.appendChild(nodoCompañia);
+
+        Element nodoEmpregado = doc.createElement("empregado");
+        nodoEmpregado.setAttribute("id", "1");
+        nodoCompañia.appendChild(nodoEmpregado);
+
+        Element nodoNombre = doc.createElement("nome");
+        Text textNombre = doc.createTextNode(nombre);
+        nodoNombre.appendChild(textNombre);
+        nodoEmpregado.appendChild(nodoNombre);
+
+        Element nodoApellido = doc.createElement("apelidos");
+        Text textApellidos = doc.createTextNode(apellidos);
+        nodoApellido.appendChild(textApellidos);
+        nodoEmpregado.appendChild(nodoApellido);
+
+        Element nodoAlcume = doc.createElement("alcume");
+        Text textAlcume = doc.createTextNode(alcume);
+        nodoAlcume.appendChild(textAlcume);
+        nodoEmpregado.appendChild(nodoAlcume);
+
+        Element nodoSalario = doc.createElement("salario");
+        Text textSalario = doc.createTextNode(salario);
+        nodoSalario.appendChild(textSalario);
+        nodoEmpregado.appendChild(nodoSalario);
+
+        // <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+        // <compañia>
+        // <empregado id="1">
+        // <nome>Juan</nome>
+        // <apelidos>López Pérez</apelidos>
+        // <alcume>Juanín</alcume >
+        // <salario>1000</salario>
+        // </ empregado >
+        // </compañia>
 
     }
 
@@ -346,36 +398,9 @@ public class Ejercicios {
 
     }
 
-    public static void nuevoDoc(Document doc,String nombre,String apellidos) {
+    
 
-        Element nodoCompañia = doc.createElement("compañia");
-        nodoCompañia.appendChild(doc.createTextNode("\n"));
-
-
-
-        Element nodoEmpregado = doc.createElement("empregado");
-        nodoEmpregado.setAttribute("id", "1");
-
-        Element nodoNombre = doc.createElement("nome");
-        Text textNombre = doc.createTextNode(nombre);
-
-        Element nodoApellido = doc.createElement("apelidos");
-        Text textApellidos = doc.createTextNode(apellidos);
-
-        Element nodo
-
-        // <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-        // <compañia>
-        // <empregado id="1">
-        // <nome>Juan</nome>
-        // <apelidos>López Pérez</apelidos>
-        // <alcume>Juanín</alcume >
-        // <salario>1000</salario>
-        // </ empregado >
-        // </compañia>
-
-    }
-    //https://prod.liveshare.vsengsaas.visualstudio.com/join?DD9800BEB9D320322F87D19A7DB6DDF55005
+    // https://prod.liveshare.vsengsaas.visualstudio.com/join?DD9800BEB9D320322F87D19A7DB6DDF55005
 
     public static void grabarDOM(Document document, String ficheroSalida)
             throws ClassNotFoundException, InstantiationException,

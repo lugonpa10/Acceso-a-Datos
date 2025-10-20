@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><compañia>
+    <empregado id="1">
+        <nome>lucas</nome>
+        <apelidos>gonzale</apelidos>
+        <alcume>Lugonpa</alcume>
+        <salario>1000</salario>
+    </empregado>
+</compañia>
