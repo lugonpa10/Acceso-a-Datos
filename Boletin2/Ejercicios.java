@@ -56,12 +56,11 @@ public class Ejercicios {
 
         // Ejercicio10
         // añadirDirector(doc);
-        
-        //Ejercicio11
+
+        // Ejercicio11
         // String titulo = "Fargo";
         // borrarPeliculas(doc, titulo);
         // grabarDOM(doc, ruta);
-        
 
     }
 
@@ -328,8 +327,7 @@ public class Ejercicios {
 
     }
 
-
-    public static void borrarPeliculas(Document doc, String titulo){
+    public static void borrarPeliculas(Document doc, String titulo) {
         NodeList peliculas = doc.getElementsByTagName("pelicula");
 
         for (int i = 0; i < peliculas.getLength(); i++) {
@@ -342,21 +340,42 @@ public class Ejercicios {
                 pelicula.getParentNode().removeChild(pelicula);
                 System.out.println("Pelicula borrada");
 
-
-                
             }
-            
+
         }
 
     }
 
-    public static void nuevoDoc(){
-        
+    public static void nuevoDoc(Document doc,String nombre,String apellidos) {
+
+        Element nodoCompañia = doc.createElement("compañia");
+        nodoCompañia.appendChild(doc.createTextNode("\n"));
+
+
+
+        Element nodoEmpregado = doc.createElement("empregado");
+        nodoEmpregado.setAttribute("id", "1");
+
+        Element nodoNombre = doc.createElement("nome");
+        Text textNombre = doc.createTextNode(nombre);
+
+        Element nodoApellido = doc.createElement("apelidos");
+        Text textApellidos = doc.createTextNode(apellidos);
+
+        Element nodo
+
+        // <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+        // <compañia>
+        // <empregado id="1">
+        // <nome>Juan</nome>
+        // <apelidos>López Pérez</apelidos>
+        // <alcume>Juanín</alcume >
+        // <salario>1000</salario>
+        // </ empregado >
+        // </compañia>
 
     }
-
-
-    
+    //https://prod.liveshare.vsengsaas.visualstudio.com/join?DD9800BEB9D320322F87D19A7DB6DDF55005
 
     public static void grabarDOM(Document document, String ficheroSalida)
             throws ClassNotFoundException, InstantiationException,
