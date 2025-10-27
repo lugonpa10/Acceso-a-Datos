@@ -105,7 +105,7 @@ public class Main {
         System.out.println(j);
 
         JsonArray raiz = j.asJsonArray();
-        System.out.println(raiz.size());
+        // System.out.println(raiz.size());
 
         for (JsonValue peli : raiz) {
             JsonObject p = peli.asJsonObject();

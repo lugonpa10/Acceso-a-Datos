@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.Scanner;
 
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
@@ -81,31 +83,89 @@ public class Main {
         }
     }
 
-    public static void ejercicio1() {
-        Scanner sc = new Scanner(System.in);
-        String localidad;
+    public static JsonValue ejercicio1() {
+        String ciudad = "ourense";
+        JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?q=" + ciudad
+                + ",es&lang=es&+units=metric&APPID=8f8dccaf02657071004202f05c1fdce0");
+        return j;
+    }
 
-        System.out.println("Escribe una localidad");
-        localidad = sc.nextLine();
+    public static JsonValue ejercicio2(double lat, double lon) {
+        JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon
+                + "&APPID=8f8dccaf02657071004202f05c1fdce0");
+        return j;
+    }
 
-        JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?q=" + localidad
+    public static JsonValue ejercicio3(double lat, double lon, int x) {
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lon + "&cnt=" + x
+                + "&APPID=a975f935caf274ab016f4308ffa23453");
+        return j;
+    }
+
+    public static JsonValue ejercicio4(String nombre) {
+
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/weather?q=" + nombre
                 + ",es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
-        System.out.println(j);
 
-    }
-https://prod.liveshare.vsengsaas.visualstudio.com/join?6E16D2CC3EE022143F513A4A3517CB76F4F4
-    public static void ejercicio2() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Dime una longitud");
-        float lon = sc.nextFloat();
-        System.out.println("");
-        float lat = sc.nextFloat();
+        System.out.println(j.asJsonObject().getInt("id"));
 
-        JsonValue j = leeJSON(
-                "http://api.openweathermap.org/data/2.5/weather?lat=42.232819&lon=-8.72264&APPID=8f8dccaf02657071004202f05c1fdce0");
+        return j;
     }
 
-    public static void main(String[] args) {
-        ejercicio1();
+    public static JsonValue ejercicio5(int id) {
+
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/weather?id=" + id
+                + "&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        System.out.println(j.asJsonObject().getString("name"));
+
+        return j;
+    }
+
+    public static JsonValue ejercicio6(String nombre) {
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/weather?q=" + nombre
+                + ",es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        JsonObject raiz = j.asJsonObject();
+
+        
+
+            JsonObject coordenadas = raiz.getJsonObject("coord");
+
+            System.out.println("Long: " + coordenadas.getJsonNumber("lon") + "Lat: " + coordenadas.getJsonNumber("lat"));
+
+        
+
+
+           
+
+        return j;
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        JsonValue j1, j2, j3, j4;
+
+        System.out.println("--------------------Ejercicio 1--------------------------");
+        j1 = ejercicio1();
+        System.out.println(j1);
+
+        System.out.println("--------------------Ejercicio 2--------------------------");
+        j2 = ejercicio2(42.232819, -8.72264);
+        System.out.println(j2);
+
+        System.out.println("--------------------Ejercicio 3--------------------------");
+        j3 = ejercicio3(42.232819, -8.72264, 2);
+        System.out.println(j3);
+
+        System.out.println("--------------------Ejercicio 4--------------------------");
+        ejercicio4("barcelona");
+
+        System.out.println("--------------------Ejercicio 5--------------------------");
+        ejercicio5(3105976);
+
+        System.out.println("--------------------Ejercicio 6--------------------------");
+        ejercicio6("vigo");
+
+
     }
 }
