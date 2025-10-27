@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Scanner;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -19,7 +20,7 @@ import javax.json.stream.JsonGenerator;
 import javax.net.ssl.HttpsURLConnection;
 
 public class Main {
-
+    
     public static JsonValue leeJSON(String ruta) {
         try {
             if (ruta.toLowerCase().startsWith("http://")) {
@@ -33,6 +34,18 @@ public class Main {
             System.out.println("Error procesando documento Json " + e.getLocalizedMessage());
             return null;
         }
+    }
+    
+    public static void ejercicio1() {
+        Scanner sc = new Scanner(System.in);
+        String localidad;
+
+        System.out.println("Escribe una localidad");
+        localidad = sc.nextLine();
+
+      JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?q=" + localidad +",es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+      System.out.println(j);
+
     }
 
     public static JsonValue leerFichero(String ruta) throws FileNotFoundException {
@@ -179,7 +192,8 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         // JsonValue json = leeJSON("https://pokeapi.co/api/v2/pokemon/ditto");
         // escribeJSON(json, new File("jsonproyect/src/main/resources/ditto.json"));
-        navegarPelis();
-        generaEndisco(new File("src/main/resources/pelisgenerado.json"));
+        // navegarPelis();
+        // generaEndisco(new File("src/main/resources/pelisgenerado.json"));
+        ejercicio1();
     }
 }
