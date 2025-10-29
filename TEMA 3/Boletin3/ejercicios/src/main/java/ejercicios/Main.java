@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import javax.json.Json;
@@ -128,22 +131,54 @@ public class Main {
 
         JsonObject raiz = j.asJsonObject();
 
-        
+        JsonObject coordenadas = raiz.getJsonObject("coord");
 
-            JsonObject coordenadas = raiz.getJsonObject("coord");
-
-            System.out.println("Long: " + coordenadas.getJsonNumber("lon") + "Lat: " + coordenadas.getJsonNumber("lat"));
-
-        
-
-
-           
+        System.out.println("Long: " + coordenadas.getJsonNumber("lon") + "Lat: " + coordenadas.getJsonNumber("lat"));
 
         return j;
     }
 
+    public static JsonValue ejercicio7() {
+        JsonValue j = leeJSON(
+                "http://api.openweathermap.org/data/2.5/weather?q=vigo,es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        JsonObject raiz = j.asJsonObject();
+
+        JsonObject main = raiz.getJsonObject("main");
+
+        System.out.println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " + main.getJsonNumber("humidity"));
+
+        JsonObject clouds = raiz.getJsonObject("clouds");
+
+        System.out.println("Probabilidad de nubes : " + clouds.getJsonNumber("all"));
+
+        JsonObject wind = raiz.getJsonObject("wind");
+
+        System.out.println("velocidad viento: " + wind.getJsonNumber("speed"));
+
+        JsonArray weather = raiz.getJsonArray("weather");
+
+        System.out.println("Descripcion tiempo: " + weather.getJsonObject(0).getString("description"));
+
+
+        long dt = raiz.getJsonNumber("dt").longValue();
+
+        System.out.println(unixTimeToString(dt));
+
+        return j;
+    }
+
+    public static JsonValue ejercicio8(){
+        
+    }
+
+    public static String unixTimeToString(long unixTime) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return Instant.ofEpochSecond(unixTime).atZone(ZoneId.of("GMT+1")).format(formatter);
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
-        JsonValue j1, j2, j3, j4;
+        JsonValue j1, j2, j3;
 
         System.out.println("--------------------Ejercicio 1--------------------------");
         j1 = ejercicio1();
@@ -165,6 +200,10 @@ public class Main {
 
         System.out.println("--------------------Ejercicio 6--------------------------");
         ejercicio6("vigo");
+
+        System.out.println("--------------------Ejercicio 7--------------------------");
+        ejercicio7();
+
 
 
     }
