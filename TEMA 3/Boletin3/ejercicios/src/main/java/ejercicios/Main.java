@@ -146,7 +146,8 @@ public class Main {
 
         JsonObject main = raiz.getJsonObject("main");
 
-        System.out.println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " + main.getJsonNumber("humidity"));
+        System.out
+                .println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " + main.getJsonNumber("humidity"));
 
         JsonObject clouds = raiz.getJsonObject("clouds");
 
@@ -160,7 +161,6 @@ public class Main {
 
         System.out.println("Descripcion tiempo: " + weather.getJsonObject(0).getString("description"));
 
-
         long dt = raiz.getJsonNumber("dt").longValue();
 
         System.out.println(unixTimeToString(dt));
@@ -168,13 +168,66 @@ public class Main {
         return j;
     }
 
-    public static JsonValue ejercicio8(){
-        
-    }
-
     public static String unixTimeToString(long unixTime) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return Instant.ofEpochSecond(unixTime).atZone(ZoneId.of("GMT+1")).format(formatter);
+    }
+
+    public static JsonValue ejercicio8(double lat, double lon, int cont) {
+
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lon
+                + "&cnt=" + cont + "&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        JsonArray raiz = j.asJsonArray();
+
+        for (JsonValue raiz1 : raiz) {
+
+            JsonValue main = raiz1.asJsonObject();
+
+            
+
+
+
+
+
+
+            
+        }
+
+
+         
+
+        
+
+        
+
+
+
+
+        // JsonObject raiz = j.asJsonObject();
+
+        // JsonObject main = raiz.getJsonObject("main");
+
+        // System.out
+        //         .println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " + main.getJsonNumber("humidity"));
+
+        // JsonObject clouds = raiz.getJsonObject("clouds");
+
+        // System.out.println("Probabilidad de nubes : " + clouds.getJsonNumber("all"));
+
+        // JsonObject wind = raiz.getJsonObject("wind");
+
+        // System.out.println("velocidad viento: " + wind.getJsonNumber("speed"));
+
+        // JsonArray weather = raiz.getJsonArray("weather");
+
+        // System.out.println("Descripcion tiempo: " + weather.getJsonObject(0).getString("description"));
+
+        // long dt = raiz.getJsonNumber("dt").longValue();
+
+        // System.out.println(unixTimeToString(dt));
+
+        return j;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -204,7 +257,8 @@ public class Main {
         System.out.println("--------------------Ejercicio 7--------------------------");
         ejercicio7();
 
-
+        System.out.println("--------------------Ejercicio 8--------------------------");
+        ejercicio8(42.232819, 8.72264, 3);
 
     }
 }
