@@ -175,59 +175,85 @@ public class Main {
 
     public static JsonValue ejercicio8(double lat, double lon, int cont) {
 
+        lat = 42.232819;
+        lon = -8.72264;
+        cont = 3;
+
         JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lon
                 + "&cnt=" + cont + "&APPID=8f8dccaf02657071004202f05c1fdce0");
 
-        JsonArray raiz = j.asJsonArray();
+        JsonArray list = j.asJsonObject().getJsonArray("list");
 
-        for (JsonValue raiz1 : raiz) {
+        for (int i = 0; i < list.size(); i++) {
 
-            JsonValue main = raiz1.asJsonObject();
+            JsonObject raiz = list.get(i).asJsonObject();
 
-            
+            System.out.println("Ciudad: " + raiz.getString("name"));
 
+            JsonObject main = raiz.getJsonObject("main");
 
+            System.out.println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " +
+                    main.getJsonNumber("humidity"));
 
+            JsonObject clouds = raiz.getJsonObject("clouds");
 
+            System.out.println("Probabilidad de nubes : " + clouds.getJsonNumber("all"));
 
+            JsonObject wind = raiz.getJsonObject("wind");
 
+            System.out.println("velocidad viento: " + wind.getJsonNumber("speed"));
+
+            JsonArray weather = raiz.getJsonArray("weather");
+
+            System.out.println("Descripcion tiempo: " +
+                    weather.getJsonObject(0).getString("description"));
+
+            long dt = raiz.getJsonNumber("dt").longValue();
+
+            System.out.println(unixTimeToString(dt));
+        }
+
+        return j;
+    }
+
+    public static JsonValue ejercicio9() {
+
+        JsonValue j = leeJSON("https://opentdb.com/api.php?amount=20&category=18&difficulty=hard&type=multiple");
+
+        JsonArray results = j.asJsonObject().getJsonArray("results");
+
+        for (int i = 0; i < results.size(); i++) {
+
+            JsonObject raiz = results.get(i).asJsonObject();
+     
+            System.out.println("Pregunta: " + raiz.getString("question"));
+
+            System.out.println("Respuesta Correcta: *" + raiz.getString("correct_answer"));
+
+            JsonArray incorrectas = raiz.getJsonArray("incorrect_answers");
+
+            for (int k = 0; k < incorrectas.size(); k++) {
+
+                System.out.println("Respuestas Incorrectas: " + incorrectas.getString(k));
+                
+            }
             
         }
 
+        return j;
 
-         
+    }
+
+    public static JsonValue ejercicio10(){
+
+        String tipo ="music";
+
+        JsonValue j =leeJSON("https://app.ticketmaster.com/discovery/v2/events.json?classificationName="+ tipo+ "&countryCode=ES&apikey=AMXR5Rf8zlr7oGucsebGKvDCLOQmGUGE");
 
         
-
-        
-
-
-
-
-        // JsonObject raiz = j.asJsonObject();
-
-        // JsonObject main = raiz.getJsonObject("main");
-
-        // System.out
-        //         .println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " + main.getJsonNumber("humidity"));
-
-        // JsonObject clouds = raiz.getJsonObject("clouds");
-
-        // System.out.println("Probabilidad de nubes : " + clouds.getJsonNumber("all"));
-
-        // JsonObject wind = raiz.getJsonObject("wind");
-
-        // System.out.println("velocidad viento: " + wind.getJsonNumber("speed"));
-
-        // JsonArray weather = raiz.getJsonArray("weather");
-
-        // System.out.println("Descripcion tiempo: " + weather.getJsonObject(0).getString("description"));
-
-        // long dt = raiz.getJsonNumber("dt").longValue();
-
-        // System.out.println(unixTimeToString(dt));
 
         return j;
+
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -259,6 +285,13 @@ public class Main {
 
         System.out.println("--------------------Ejercicio 8--------------------------");
         ejercicio8(42.232819, 8.72264, 3);
+
+        System.out.println("--------------------Ejercicio 9--------------------------");
+        ejercicio9();
+
+        System.out.println("--------------------Ejercicio 10--------------------------");
+        ejercicio10();
+
 
     }
 }
