@@ -87,10 +87,10 @@ public class Main {
         }
     }
 
-    public static JsonValue ejercicio1() {
-        String ciudad = "ourense";
+    public static JsonValue ejercicio1(String ciudad) {
+        
         JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?q=" + ciudad
-                + ",es&lang=es&+units=metric&APPID=8f8dccaf02657071004202f05c1fdce0");
+                + ",es&lang=es&+units=metric&APPID=8f8dccaf02657071004202f05c1fdce0").asJsonObject();
         return j;
     }
 
@@ -139,9 +139,8 @@ public class Main {
         return j;
     }
 
-    public static JsonValue ejercicio7() {
-        JsonValue j = leeJSON(
-                "http://api.openweathermap.org/data/2.5/weather?q=vigo,es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+    public static JsonValue ejercicio7(JsonObject j) {
+       
 
         JsonObject raiz = j.asJsonObject();
 
@@ -165,6 +164,7 @@ public class Main {
         long dt = raiz.getJsonNumber("dt").longValue();
 
         System.out.println(unixTimeToString(dt));
+        System.out.println();
 
         return j;
     }
@@ -282,13 +282,16 @@ public class Main {
                 System.out.println("Codigo Postal: " + codPostal);
 
                 JsonObject ciudad = datos.getJsonObject("city");
-                System.out.println("Ciudad: " + ciudad);
+                String nombre =ciudad.getString("name");
+                System.out.println("Ciudad: " + nombre);
 
                 JsonObject pais = datos.getJsonObject("country");
-                System.out.println("Pais: " + pais);
+                String nombrePais = pais.getString("name");
+                System.out.println("Pais: " + nombrePais);
 
                 JsonObject dir = datos.getJsonObject("address");
-                System.out.println("Direccion: " + dir);
+                String line1= dir.getString("line1");
+                System.out.println("Direccion: " + line1);
             }
         }
 
@@ -299,26 +302,52 @@ public class Main {
     public static JsonValue ejercicio11_2(JsonObject j) {
 
         JsonObject embedded = j.getJsonObject("_embedded");
-        JsonArray venues = embedded.getJsonArray("venues");
+        JsonArray eventos = embedded.getJsonArray("events");
 
-       
-        for (int i = 0; i < venues.size(); i++) {
+        for (int i = 0; i < eventos.size(); i++) {
 
-            JsonObject raiz = venues.getJsonObject(i);
-            JsonObject dates = raiz.getJsonObject("dates");
-
-            JsonObject start = dates.getJsonObject("start");
-
-            String localDate = start.getString("localDate");
-            System.out.println("Fecha: " + localDate);
-
-            String localTime = start.getString("localTime");
-            System.out.println("Hora: " + localTime);
+            JsonObject raiz = eventos.getJsonObject(i);
+            String nombre = raiz.getString("name");
+            System.out.println("Nombre: " + nombre);
+            JsonObject fechas = raiz.getJsonObject("dates");
+            JsonObject horaios = fechas.getJsonObject("start");
+            String fecha = horaios.getString("localDate");
+            System.out.println("Fecha: " + fecha);
+            String hora = horaios.getString("localTime");
+            System.out.println("Hora: " + hora);
 
         }
 
         return j;
 
+    }
+
+    public static JsonValue ejercicio12(JsonObject j) {
+
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+
+        for (int i = 0; i < eventos.size(); i++) {
+
+            JsonObject raiz = eventos.getJsonObject(i);
+            JsonObject embedded2 = raiz.getJsonObject("_embedded");
+
+            JsonArray venues = embedded2.getJsonArray("venues");
+            for (int k = 0; k < venues.size(); k++) {
+
+                JsonObject todosVenues = venues.getJsonObject(k);
+                String lugar = todosVenues.getString("name");
+                JsonObject ciudad = todosVenues.getJsonObject("city");
+                String nombreCiudad = ciudad.getString("name");
+                JsonObject ej1 = ejercicio1(nombreCiudad).asJsonObject();
+                System.out.printf("Lugar: %s - ", lugar);
+                ejercicio7(ej1);
+
+            }
+
+        }
+
+        return j;
     }
 
     public static JsonValue ticketMasterJsonValue(String tipo, String pais) {
@@ -328,31 +357,37 @@ public class Main {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        JsonValue j1, j2, j3;
+        JsonValue j, j2, j3;
+        
 
-        System.out.println("--------------------Ejercicio 1--------------------------");
-        j1 = ejercicio1();
-        System.out.println(j1);
+      
 
-        System.out.println("--------------------Ejercicio 2--------------------------");
-        j2 = ejercicio2(42.232819, -8.72264);
-        System.out.println(j2);
+        
+        
+        // System.out.println("--------------------Ejercicio 1--------------------------");
+        j = ejercicio1("vigo");
+        // System.out.println(j);
+        
+        // System.out.println("--------------------Ejercicio 2--------------------------");
+        // j2 = ejercicio2(42.232819, -8.72264);
+        // System.out.println(j2);
 
-        System.out.println("--------------------Ejercicio 3--------------------------");
-        j3 = ejercicio3(42.232819, -8.72264, 2);
-        System.out.println(j3);
+        // System.out.println("--------------------Ejercicio 3--------------------------");
+        // j3 = ejercicio3(42.232819, -8.72264, 2);
+        // System.out.println(j3);
 
-        System.out.println("--------------------Ejercicio 4--------------------------");
-        ejercicio4("barcelona");
-
-        System.out.println("--------------------Ejercicio 5--------------------------");
-        ejercicio5(3105976);
-
-        System.out.println("--------------------Ejercicio 6--------------------------");
-        ejercicio6("vigo");
-
+        // System.out.println("--------------------Ejercicio 4--------------------------");
+        // ejercicio4("barcelona");
+        
+        // System.out.println("--------------------Ejercicio 5--------------------------");
+        // ejercicio5(3105976);
+        
+        // System.out.println("--------------------Ejercicio 6--------------------------");
+        // ejercicio6("vigo");
+        
         System.out.println("--------------------Ejercicio 7--------------------------");
-        ejercicio7();
+        JsonObject j7 = j.asJsonObject();
+        ejercicio7(j7);;
 
         System.out.println("--------------------Ejercicio 8--------------------------");
         ejercicio8(42.232819, 8.72264, 3);
@@ -366,6 +401,9 @@ public class Main {
         System.out.println("--------------------Ejercicio 11--------------------------");
         ejercicio11_1(ticketMasterJsonValue("music", "ES").asJsonObject());
         ejercicio11_2(ticketMasterJsonValue("music", "ES").asJsonObject());
+
+        System.out.println("--------------------Ejercicio 12--------------------------");
+        ejercicio12(ticketMasterJsonValue("music", "ES").asJsonObject());
 
     }
 }
