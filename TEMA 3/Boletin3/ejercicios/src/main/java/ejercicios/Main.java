@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.security.PublicKey;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -225,7 +226,7 @@ public class Main {
         for (int i = 0; i < results.size(); i++) {
 
             JsonObject raiz = results.get(i).asJsonObject();
-     
+
             System.out.println("Pregunta: " + raiz.getString("question"));
 
             System.out.println("Respuesta Correcta: *" + raiz.getString("correct_answer"));
@@ -235,25 +236,95 @@ public class Main {
             for (int k = 0; k < incorrectas.size(); k++) {
 
                 System.out.println("Respuestas Incorrectas: " + incorrectas.getString(k));
-                
+
             }
-            
+
         }
 
         return j;
 
     }
 
-    public static JsonValue ejercicio10(){
+    public static JsonValue ejercicio10(JsonObject j) {
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+        for (int i = 0; i < eventos.size(); i++) {
 
-        String tipo ="music";
+            JsonObject raiz = eventos.getJsonObject(i);
 
-        JsonValue j =leeJSON("https://app.ticketmaster.com/discovery/v2/events.json?classificationName="+ tipo+ "&countryCode=ES&apikey=AMXR5Rf8zlr7oGucsebGKvDCLOQmGUGE");
+            String name = raiz.getString("name");
+            System.out.println("Nombre: " + name);
+        }
+        return j;
 
-        
+    }
+
+    public static JsonValue ejercicio11_1(JsonObject j) {
+
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+
+        for (int i = 0; i < eventos.size(); i++) {
+
+            JsonObject raiz = eventos.getJsonObject(i);
+
+            JsonObject embedded2 = raiz.getJsonObject("_embedded");
+            JsonArray venues = embedded2.getJsonArray("venues");
+
+            for (int k = 0; k < venues.size(); k++) {
+
+                JsonObject datos = venues.getJsonObject(k);
+
+                String name = datos.getString("name");
+                System.out.println("Nombre: " + name);
+
+                String codPostal = datos.getString("postalCode");
+                System.out.println("Codigo Postal: " + codPostal);
+
+                JsonObject ciudad = datos.getJsonObject("city");
+                System.out.println("Ciudad: " + ciudad);
+
+                JsonObject pais = datos.getJsonObject("country");
+                System.out.println("Pais: " + pais);
+
+                JsonObject dir = datos.getJsonObject("address");
+                System.out.println("Direccion: " + dir);
+            }
+        }
 
         return j;
 
+    }
+
+    public static JsonValue ejercicio11_2(JsonObject j) {
+
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray venues = embedded.getJsonArray("venues");
+
+       
+        for (int i = 0; i < venues.size(); i++) {
+
+            JsonObject raiz = venues.getJsonObject(i);
+            JsonObject dates = raiz.getJsonObject("dates");
+
+            JsonObject start = dates.getJsonObject("start");
+
+            String localDate = start.getString("localDate");
+            System.out.println("Fecha: " + localDate);
+
+            String localTime = start.getString("localTime");
+            System.out.println("Hora: " + localTime);
+
+        }
+
+        return j;
+
+    }
+
+    public static JsonValue ticketMasterJsonValue(String tipo, String pais) {
+        return leeJSON(
+                "https://app.ticketmaster.com/discovery/v2/events.json?classificationName=" + tipo + "&countryCode="
+                        + pais + "&apikey=AMXR5Rf8zlr7oGucsebGKvDCLOQmGUGE");
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -290,8 +361,11 @@ public class Main {
         ejercicio9();
 
         System.out.println("--------------------Ejercicio 10--------------------------");
-        ejercicio10();
+        ejercicio10(ticketMasterJsonValue("music", "ES").asJsonObject());
 
+        System.out.println("--------------------Ejercicio 11--------------------------");
+        ejercicio11_1(ticketMasterJsonValue("music", "ES").asJsonObject());
+        ejercicio11_2(ticketMasterJsonValue("music", "ES").asJsonObject());
 
     }
 }
