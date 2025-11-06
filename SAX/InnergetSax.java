@@ -12,13 +12,13 @@ public class InnergetSax {
         SAXParser parser = factory.newSAXParser();
 
        
-        Ejercicios parserSax = new Ejercicios(); // ParserSAX es la clase que se deberá
+        Ejercicio16 parserSax = new Ejercicio16(); // ParserSAX es la clase que se deberá
 
         parser.parse(entradaXML, parserSax); // implementar y que hereda de DafaultHandler
     }
 
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
-        getSax("C:\\Users\\lucas\\Desktop\\Repositorios\\Acceso-a-Datos\\SAX\\archivo.xml"); 
+        getSax("archivo.xml"); 
     }
 
 }

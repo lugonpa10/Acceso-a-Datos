@@ -3,50 +3,48 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Ejercicios extends DefaultHandler {
-    String etiqueta;
-    String texto;
+
+    private String texto = "";
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        // TODO Auto-generated method stub
-        super.characters(ch, start, length);
-
-        String contido = new String(ch, start, length);
-        if (!contido.equals("")) {
-            System.out.println(contido);
-        }
-
+    public void startDocument() throws SAXException {
+        System.out.println("Comezo a ler");
     }
 
     @Override
-    public void endDocument() throws SAXException {
-        // TODO Auto-generated method stub
-        super.endDocument();
+    public void startElement(String uri, String localName, String qName, Attributes attributes)
+            throws SAXException {
+        texto = ""; 
+        System.out.print("<" + qName);
+
+        
+        if (attributes != null && attributes.getLength() > 0) {
+            for (int i = 0; i < attributes.getLength(); i++) {
+                System.out.print(" " + attributes.getQName(i) + "=\"" + attributes.getValue(i) + "\"");
+            }
+        }
+
+        System.out.println(">");
+    }
+
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException {
+       
+        texto += new String(ch, start, length);
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        // TODO Auto-generated method stub
-        super.endElement(uri, localName, qName);
+      
+        texto = texto.trim();
+        if (!texto.isEmpty()) {
+            System.out.println(texto);
+        }
         System.out.println("</" + qName + ">");
-
     }
 
     @Override
-    public void startDocument() throws SAXException {
-        // TODO Auto-generated method stub
-        super.startDocument();
-        System.out.println("Comezo a ler");
-
+    public void endDocument() throws SAXException {
+        System.out.println("Fin da lectura");
     }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        // TODO Auto-generated method stub
-        super.startElement(uri, localName, qName, attributes);
-        etiqueta = qName;
-        System.out.println("<" + qName + ">");
-
-    }
-
 }
