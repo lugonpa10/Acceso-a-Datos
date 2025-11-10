@@ -12,7 +12,7 @@ public class InnergetSax {
         SAXParser parser = factory.newSAXParser();
 
        
-        Ejercicio16 parserSax = new Ejercicio16(); // ParserSAX es la clase que se deberá
+        Ejercicio15 parserSax = new Ejercicio15(); // ParserSAX es la clase que se deberá
 
         parser.parse(entradaXML, parserSax); // implementar y que hereda de DafaultHandler
     }

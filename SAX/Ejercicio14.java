@@ -2,7 +2,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class Ejercicios extends DefaultHandler {
+public class Ejercicio14 extends DefaultHandler {
 
     private String texto = "";
 
@@ -14,33 +14,25 @@ public class Ejercicios extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
-        texto = ""; 
+         
         System.out.print("<" + qName);
 
-        
-        if (attributes != null && attributes.getLength() > 0) {
-            for (int i = 0; i < attributes.getLength(); i++) {
-                System.out.print(" " + attributes.getQName(i) + "=\"" + attributes.getValue(i) + "\"");
-            }
-        }
-
-        System.out.println(">");
+        System.out.print(">");
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
        
-        texto += new String(ch, start, length);
+        texto = new String(ch, start, length);
+        System.out.print(texto);
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       
-        texto = texto.trim();
-        if (!texto.isEmpty()) {
-            System.out.println(texto);
-        }
-        System.out.println("</" + qName + ">");
+       
+        
+        System.out.print("</" + qName + ">");
     }
 
     @Override
