@@ -61,6 +61,7 @@ public class Ejercicio9 {
         }
     }
 
+
     public static void consultarAlumno() throws FileNotFoundException, IOException {
         System.out.print("Código a consultar: ");
         int codigo = sc.nextInt();
@@ -175,7 +176,6 @@ public class Ejercicio9 {
                 System.out.printf("Código: %d, Nombre: %s, Altura: %.2f%n", cod, nombre, altura);
             }
         } catch (EOFException e) {
-            System.out.println("Error al listar alumnos");
         }
     }
 }
