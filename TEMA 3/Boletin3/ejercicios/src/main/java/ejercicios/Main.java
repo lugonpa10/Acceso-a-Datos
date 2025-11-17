@@ -1,0 +1,409 @@
+package ejercicios;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.security.PublicKey;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+import javax.json.JsonWriter;
+import javax.net.ssl.HttpsURLConnection;
+
+public class Main {
+
+    public static void escribeJSON(JsonValue json, File f) throws FileNotFoundException {
+        System.out.println("Guardando tipo: " + json.getValueType());
+        PrintWriter pw = new PrintWriter(f);
+        JsonWriter writer = Json.createWriter(pw);
+
+        if (json.getValueType() == JsonValue.ValueType.OBJECT) {
+            writer.writeObject(json.asJsonObject());
+        } else if (json.getValueType() == JsonValue.ValueType.ARRAY) {
+            writer.writeArray(json.asJsonArray());
+        } else {
+            System.out.println("No se soporta la escritura");
+        }
+
+        writer.close();
+    }
+
+    public static JsonValue leerHttp(String direccion) throws IOException {
+        URL url = new URL(direccion);
+        try (InputStream is = url.openStream();
+                JsonReader reader = Json.createReader(is)) {
+            return reader.read();
+        }
+    }
+
+    public static JsonValue leerHttps(String direccion) throws IOException {
+        URL url = new URL(direccion);
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        try (InputStream is = conn.getInputStream();
+                JsonReader reader = Json.createReader(is)) {
+            return reader.read();
+        } finally {
+            conn.disconnect();
+        }
+    }
+
+    public static JsonValue leeJSON(String ruta) {
+        try {
+            if (ruta.toLowerCase().startsWith("http://")) {
+                return leerHttp(ruta);
+            } else if (ruta.toLowerCase().startsWith("https://")) {
+                return leerHttps(ruta);
+            } else {
+                return leerFichero(ruta);
+            }
+        } catch (IOException e) {
+            System.out.println("Error procesando documento Json " + e.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    public static JsonValue leerFichero(String ruta) throws FileNotFoundException {
+        try (JsonReader reader = Json.createReader(new FileReader(ruta))) {
+            return reader.read();
+            /*
+             * JsonStructure jsonSt = reader.read();
+             * System.out.println(jsonSt.getValueType());
+             * JsonObject jsonObj = reader.readObject();
+             * System.out.println(jsonObj.getValueType());
+             * JsonArray jsonArr = reader.readArray();
+             * System.out.println(jsonArr.getValueType());
+             */
+        }
+    }
+
+    public static JsonValue ejercicio1(String ciudad) {
+        
+        JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?q=" + ciudad
+                + ",es&lang=es&+units=metric&APPID=8f8dccaf02657071004202f05c1fdce0").asJsonObject();
+        return j;
+    }
+
+    public static JsonValue ejercicio2(double lat, double lon) {
+        JsonValue j = leeJSON("https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon
+                + "&APPID=8f8dccaf02657071004202f05c1fdce0");
+        return j;
+    }
+
+    public static JsonValue ejercicio3(double lat, double lon, int x) {
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lon + "&cnt=" + x
+                + "&APPID=a975f935caf274ab016f4308ffa23453");
+        return j;
+    }
+
+    public static JsonValue ejercicio4(String nombre) {
+
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/weather?q=" + nombre
+                + ",es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        System.out.println(j.asJsonObject().getInt("id"));
+
+        return j;
+    }
+
+    public static JsonValue ejercicio5(int id) {
+
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/weather?id=" + id
+                + "&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        System.out.println(j.asJsonObject().getString("name"));
+
+        return j;
+    }
+
+    public static JsonValue ejercicio6(String nombre) {
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/weather?q=" + nombre
+                + ",es&lang=es&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        JsonObject raiz = j.asJsonObject();
+
+        JsonObject coordenadas = raiz.getJsonObject("coord");
+
+        System.out.println("Long: " + coordenadas.getJsonNumber("lon") + "Lat: " + coordenadas.getJsonNumber("lat"));
+
+        return j;
+    }
+
+    public static JsonValue ejercicio7(JsonObject j) {
+       
+
+        JsonObject raiz = j.asJsonObject();
+
+        JsonObject main = raiz.getJsonObject("main");
+
+        System.out
+                .println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " + main.getJsonNumber("humidity"));
+
+        JsonObject clouds = raiz.getJsonObject("clouds");
+
+        System.out.println("Probabilidad de nubes : " + clouds.getJsonNumber("all"));
+
+        JsonObject wind = raiz.getJsonObject("wind");
+
+        System.out.println("velocidad viento: " + wind.getJsonNumber("speed"));
+
+        JsonArray weather = raiz.getJsonArray("weather");
+
+        System.out.println("Descripcion tiempo: " + weather.getJsonObject(0).getString("description"));
+
+        long dt = raiz.getJsonNumber("dt").longValue();
+
+        System.out.println(unixTimeToString(dt));
+        System.out.println();
+
+        return j;
+    }
+
+    public static String unixTimeToString(long unixTime) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return Instant.ofEpochSecond(unixTime).atZone(ZoneId.of("GMT+1")).format(formatter);
+    }
+
+    public static JsonValue ejercicio8(double lat, double lon, int cont) {
+
+        lat = 42.232819;
+        lon = -8.72264;
+        cont = 3;
+
+        JsonValue j = leeJSON("http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lon
+                + "&cnt=" + cont + "&APPID=8f8dccaf02657071004202f05c1fdce0");
+
+        JsonArray list = j.asJsonObject().getJsonArray("list");
+
+        for (int i = 0; i < list.size(); i++) {
+
+            JsonObject raiz = list.get(i).asJsonObject();
+
+            System.out.println("Ciudad: " + raiz.getString("name"));
+
+            JsonObject main = raiz.getJsonObject("main");
+
+            System.out.println("Temperatura: " + main.getJsonNumber("temp") + " Humedad: " +
+                    main.getJsonNumber("humidity"));
+
+            JsonObject clouds = raiz.getJsonObject("clouds");
+
+            System.out.println("Probabilidad de nubes : " + clouds.getJsonNumber("all"));
+
+            JsonObject wind = raiz.getJsonObject("wind");
+
+            System.out.println("velocidad viento: " + wind.getJsonNumber("speed"));
+
+            JsonArray weather = raiz.getJsonArray("weather");
+
+            System.out.println("Descripcion tiempo: " +
+                    weather.getJsonObject(0).getString("description"));
+
+            long dt = raiz.getJsonNumber("dt").longValue();
+
+            System.out.println(unixTimeToString(dt));
+        }
+
+        return j;
+    }
+
+    public static JsonValue ejercicio9() {
+
+        JsonValue j = leeJSON("https://opentdb.com/api.php?amount=20&category=18&difficulty=hard&type=multiple");
+
+        JsonArray results = j.asJsonObject().getJsonArray("results");
+
+        for (int i = 0; i < results.size(); i++) {
+
+            JsonObject raiz = results.get(i).asJsonObject();
+
+            System.out.println("Pregunta: " + raiz.getString("question"));
+
+            System.out.println("Respuesta Correcta: *" + raiz.getString("correct_answer"));
+
+            JsonArray incorrectas = raiz.getJsonArray("incorrect_answers");
+
+            for (int k = 0; k < incorrectas.size(); k++) {
+
+                System.out.println("Respuestas Incorrectas: " + incorrectas.getString(k));
+
+            }
+
+        }
+
+        return j;
+
+    }
+
+    public static JsonValue ejercicio10(JsonObject j) {
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+        for (int i = 0; i < eventos.size(); i++) {
+
+            JsonObject raiz = eventos.getJsonObject(i);
+
+            String name = raiz.getString("name");
+            System.out.println("Nombre: " + name);
+        }
+        return j;
+
+    }
+
+    public static JsonValue ejercicio11_1(JsonObject j) {
+
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+
+        for (int i = 0; i < eventos.size(); i++) {
+
+            JsonObject raiz = eventos.getJsonObject(i);
+
+            JsonObject embedded2 = raiz.getJsonObject("_embedded");
+            JsonArray venues = embedded2.getJsonArray("venues");
+
+            for (int k = 0; k < venues.size(); k++) {
+
+                JsonObject datos = venues.getJsonObject(k);
+
+                String name = datos.getString("name");
+                System.out.println("Nombre: " + name);
+
+                String codPostal = datos.getString("postalCode");
+                System.out.println("Codigo Postal: " + codPostal);
+
+                JsonObject ciudad = datos.getJsonObject("city");
+                String nombre =ciudad.getString("name");
+                System.out.println("Ciudad: " + nombre);
+
+                JsonObject pais = datos.getJsonObject("country");
+                String nombrePais = pais.getString("name");
+                System.out.println("Pais: " + nombrePais);
+
+                JsonObject dir = datos.getJsonObject("address");
+                String line1= dir.getString("line1");
+                System.out.println("Direccion: " + line1);
+            }
+        }
+
+        return j;
+
+    }
+
+    public static JsonValue ejercicio11_2(JsonObject j) {
+
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+
+        for (int i = 0; i < eventos.size(); i++) {
+
+            JsonObject raiz = eventos.getJsonObject(i);
+            String nombre = raiz.getString("name");
+            System.out.println("Nombre: " + nombre);
+            JsonObject fechas = raiz.getJsonObject("dates");
+            JsonObject horaios = fechas.getJsonObject("start");
+            String fecha = horaios.getString("localDate");
+            System.out.println("Fecha: " + fecha);
+            String hora = horaios.getString("localTime");
+            System.out.println("Hora: " + hora);
+
+        }
+
+        return j;
+
+    }
+
+    public static JsonValue ejercicio12(JsonObject j) {
+
+        JsonObject embedded = j.getJsonObject("_embedded");
+        JsonArray eventos = embedded.getJsonArray("events");
+
+        for (int i = 0; i < eventos.size(); i++) {
+
+            JsonObject raiz = eventos.getJsonObject(i);
+            JsonObject embedded2 = raiz.getJsonObject("_embedded");
+
+            JsonArray venues = embedded2.getJsonArray("venues");
+            for (int k = 0; k < venues.size(); k++) {
+
+                JsonObject todosVenues = venues.getJsonObject(k);
+                String lugar = todosVenues.getString("name");
+                JsonObject ciudad = todosVenues.getJsonObject("city");
+                String nombreCiudad = ciudad.getString("name");
+                JsonObject ej1 = ejercicio1(nombreCiudad).asJsonObject();
+                System.out.printf("Lugar: %s - ", lugar);
+                ejercicio7(ej1);
+
+            }
+
+        }
+
+        return j;
+    }
+
+    public static JsonValue ticketMasterJsonValue(String tipo, String pais) {
+        return leeJSON(
+                "https://app.ticketmaster.com/discovery/v2/events.json?classificationName=" + tipo + "&countryCode="
+                        + pais + "&apikey=AMXR5Rf8zlr7oGucsebGKvDCLOQmGUGE");
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        JsonValue j, j2, j3;
+        
+
+      
+
+        
+        
+        // System.out.println("--------------------Ejercicio 1--------------------------");
+        j = ejercicio1("vigo");
+        // System.out.println(j);
+        
+        // System.out.println("--------------------Ejercicio 2--------------------------");
+        // j2 = ejercicio2(42.232819, -8.72264);
+        // System.out.println(j2);
+
+        // System.out.println("--------------------Ejercicio 3--------------------------");
+        // j3 = ejercicio3(42.232819, -8.72264, 2);
+        // System.out.println(j3);
+
+        // System.out.println("--------------------Ejercicio 4--------------------------");
+        // ejercicio4("barcelona");
+        
+        // System.out.println("--------------------Ejercicio 5--------------------------");
+        // ejercicio5(3105976);
+        
+        // System.out.println("--------------------Ejercicio 6--------------------------");
+        // ejercicio6("vigo");
+        
+        System.out.println("--------------------Ejercicio 7--------------------------");
+        JsonObject j7 = j.asJsonObject();
+        ejercicio7(j7);;
+
+        System.out.println("--------------------Ejercicio 8--------------------------");
+        ejercicio8(42.232819, 8.72264, 3);
+
+        System.out.println("--------------------Ejercicio 9--------------------------");
+        ejercicio9();
+
+        System.out.println("--------------------Ejercicio 10--------------------------");
+        ejercicio10(ticketMasterJsonValue("music", "ES").asJsonObject());
+
+        System.out.println("--------------------Ejercicio 11--------------------------");
+        ejercicio11_1(ticketMasterJsonValue("music", "ES").asJsonObject());
+        ejercicio11_2(ticketMasterJsonValue("music", "ES").asJsonObject());
+
+        System.out.println("--------------------Ejercicio 12--------------------------");
+        ejercicio12(ticketMasterJsonValue("music", "ES").asJsonObject());
+
+    }
+}
