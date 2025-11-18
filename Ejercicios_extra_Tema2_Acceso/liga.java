@@ -1,4 +1,3 @@
-package Ejercicios_extra_Tema2_Acceso;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,13 +21,13 @@ public class liga {
     public static void main(String[] args) {
         String ruta = "liga.xml";
         Document doc = creaArbol(ruta);
-        temporada(doc);
-        numPartidos(doc);
-        equipos_fechas(doc);
+        // temporada(doc);
+        // numPartidos(doc);
+        // equipos_fechas(doc);
         equipo_goleador(doc);
-        equipo_Colista(doc);
-        equipo_empates(doc);
-        clasificacion_equipos(doc);
+        // equipo_Colista(doc);
+        // equipo_empates(doc);
+        // clasificacion_equipos(doc);
     }
 
     public static void temporada(Document doc) {
@@ -74,51 +73,37 @@ public class liga {
                 System.out.println("Equipo Local: " + equipolocal);
                 System.out.println("Equipo Visitante: " + equipovisiantes);
                 System.out.println("------------");
-
             }
 
         }
     }
 
     public static void equipo_goleador(Document doc) {
-
-        NodeList eventos = doc.getElementsByTagName("evento");
         ArrayList<String> equipoGoleador = new ArrayList<>();
-        int maxgoles = -1;
-        for (int i = 0; i < eventos.getLength(); i++) {
-            Node nodo = eventos.item(i);
+        int maxgoles = 0;
+        NodeList team = doc.getElementsByTagName("team");
+        for (int i = 0; i < team.getLength(); i++) {
+
+            Node nodo = team.item(i);
+
             if (nodo.getNodeType() == Node.ELEMENT_NODE) {
-                Element event = (Element) nodo;
-                String equipolocal = event.getElementsByTagName("equipolocal").item(0).getTextContent();
-                int goleslocal = Integer
-                        .parseInt(event.getElementsByTagName("resultadolocal").item(0).getTextContent());
 
-                String equipovisitante = event.getElementsByTagName("equipovisitante").item(0).getTextContent();
-                int golesvisitante = Integer
-                        .parseInt(event.getElementsByTagName("resultadovisitante").item(0).getTextContent());
-
-                if (goleslocal > maxgoles) {
-                    maxgoles = goleslocal;
+                Element equipos = (Element) nodo;
+                String nombre = equipos.getElementsByTagName("name").item(0).getTextContent();
+                int golesMarcados = Integer.parseInt(equipos.getElementsByTagName("goals_scored").item(0).getTextContent());
+                if (golesMarcados > maxgoles) {
+                    maxgoles = golesMarcados;
                     equipoGoleador.clear();
-                    equipoGoleador.add(equipolocal);
-
-                } else if (goleslocal == maxgoles) {
-                    equipoGoleador.add(equipolocal);
+                    equipoGoleador.add(nombre);
 
                 }
-                if (golesvisitante > maxgoles) {
-                    maxgoles = golesvisitante;
-                    equipoGoleador.clear();
-                    equipoGoleador.add(equipovisitante);
-                } else if (golesvisitante == maxgoles) {
-                    equipoGoleador.add(equipovisitante);
-                }
+
             }
 
         }
         for (int i = 0; i < equipoGoleador.size(); i++) {
-            System.out.println("Equipos goleadores: " + equipoGoleador.get(i));
-
+            System.out.println("Equipo Goleador: " + equipoGoleador.get(i));
+            
         }
 
     }
