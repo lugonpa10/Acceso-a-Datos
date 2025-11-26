@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Examen33</string>
+    <string name="toolbar_title">Los Simpsons</string>
+    <string-array name="nacionalidades">
+        <item>Española</item>
+        <item>Italiana</item>
+        <item>Francesa</item>
+        <item>Noruegoa</item>
+        <item>Rusa</item>
+        <item>Alemana</item>
+
+    </string-array>
+
+</resources>

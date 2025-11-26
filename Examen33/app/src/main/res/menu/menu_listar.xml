@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/volver"
+        android:icon="@android:drawable/arrow_down_float"
+        android:showAsAction="always"
+        android:title="Volver" />
+    <item
+        android:id="@+id/guardar"
+        android:icon="@android:drawable/checkbox_on_background"
+        android:showAsAction="always"
+        android:title="Guardar" />
+</menu>
