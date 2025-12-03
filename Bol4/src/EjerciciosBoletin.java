@@ -27,7 +27,7 @@ public class EjerciciosBoletin {
         }
     }
 
-    //EJERCICIO 1
+    // EJERCICIO 1
     public static void consultarAlumnos(String cad) {
         int cont = 0;
         try (Statement st = conexion.createStatement()) {
@@ -46,13 +46,14 @@ public class EjerciciosBoletin {
         }
     }
 
-    //EJERCICIO 2
+    // EJERCICIO 2
     public static void altaAlumnos(String nombre, String ape, int altura, int aula) {
 
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Insert into alumnos(nombre,apellidos,altura,aula) VALUES("+"'" + nombre +"'" +  ", '" + ape + "', " + altura +
+            String consulta = "Insert into alumnos(nombre,apellidos,altura,aula) VALUES(" + "'" + nombre + "'" + ", '"
+                    + ape + "', " + altura +
                     ", " + aula + ")";
-                    System.out.println(consulta);
+            System.out.println(consulta);
             int numFilasAfectas = st.executeUpdate(consulta);
             System.out.println(numFilasAfectas);
 
@@ -63,74 +64,74 @@ public class EjerciciosBoletin {
     }
 
     // EJERCICIO 2
-    public static void AltaAsignaturas(String nombre){
+    public static void AltaAsignaturas(String nombre) {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Insert into asignaturas (nombre) VALUES("+"'"+nombre+"'"+")";
+            String consulta = "Insert into asignaturas (nombre) VALUES(" + "'" + nombre + "'" + ")";
             System.out.println(consulta);
-             int numFilasAfectas = st.executeUpdate(consulta);
+            int numFilasAfectas = st.executeUpdate(consulta);
             System.out.println(numFilasAfectas);
 
-            
         } catch (SQLException e) {
 
         }
     }
 
-    //EJERCICIO 3
-    public static void bajaAlumnos(int id){
+    // EJERCICIO 3
+    public static void bajaAlumnos(int id) {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Delete from alumnos where codigo= "+ id;
+            String consulta = "Delete from alumnos where codigo= " + id;
             System.out.println(consulta);
             int numFilasAfectas = st.executeUpdate(consulta);
             System.out.println(numFilasAfectas);
-            
+
         } catch (SQLException e) {
 
             System.out.println("ERROR");
         }
     }
-    //EJERCICIO 3
+    // EJERCICIO 3
 
-   public static void bajaAsignaturas(int id){
+    public static void bajaAsignaturas(int id) {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Delete from asignaturas where cod= "+ id;
+            String consulta = "Delete from asignaturas where cod= " + id;
             System.out.println(consulta);
             int numFilasAfectas = st.executeUpdate(consulta);
             System.out.println(numFilasAfectas);
-            
+
         } catch (SQLException e) {
 
             System.out.println("ERROR");
         }
     }
-    //EJERCICIO 4
+    // EJERCICIO 4
 
-    public static void modificarAlumnos(String nombre,int id){
+    public static void modificarAlumnos(String nombre, int id) {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Update alumnos set nombre="+"'"+ nombre+ "'"+"where codigo="+id;
+            String consulta = "Update alumnos set nombre=" + "'" + nombre + "'" + "where codigo=" + id;
             System.out.println(consulta);
             int numFilasAfectas = st.executeUpdate(consulta);
             System.out.println(numFilasAfectas);
-            
+
         } catch (SQLException e) {
 
         }
     }
-    //EJERCICIO 4
+    // EJERCICIO 4
 
-    public static void modificarAsignaturas(String nombre,int id){
+    public static void modificarAsignaturas(String nombre, int id) {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Update asignaturas set nombre="+"'"+ nombre+ "'"+"where cod="+id;
+            String consulta = "Update asignaturas set nombre=" + "'" + nombre + "'" + "where cod=" + id;
             System.out.println(consulta);
             int numFilasAfectas = st.executeUpdate(consulta);
             System.out.println(numFilasAfectas);
-            
+
         } catch (SQLException e) {
 
         }
     }
-//Ejercicio 5
-    public static void nombreAulasAlumnos(){
+
+    // Ejercicio 5
+    public static void nombreAulasAlumnos() {
         try (Statement st = conexion.createStatement()) {
             String consulta = "Select Distinct nombreAula from aulas join alumnos on Aulas.numero = alumnos.aula ";
             System.out.println(consulta);
@@ -138,33 +139,28 @@ public class EjerciciosBoletin {
             while (rs.next()) {
                 System.out.println("Nombre: " + rs.getString(1));
 
-                
             }
 
-
-            
         } catch (Exception e) {
             // TODO: handle exception
         }
 
     }
 
-    public static void AlumnosAsignaturasNotas(){
+    // Ejercicio 5_2
+    public static void AlumnosAsignaturasNotas() {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Select Distinct Alumno.nombre,Asignaturas.nombre,notas.nota from alumno join on Alumno.codigo =Notas.alumno join asignaturas.cod = notas.asignatura where notas.nota > 5    ";
-              System.out.println(consulta);
+            String consulta = "Select Distinct Alumnos.nombre,Asignaturas.nombre,notas.nota from notas join alumnos on Notas.alumno =Alumnos.codigo join Asignaturas on  asignaturas.cod = notas.asignatura where notas.nota >= 5";
+            System.out.println(consulta);
             ResultSet rs = st.executeQuery(consulta);
             while (rs.next()) {
                 System.out.println("Nombre: " + rs.getString(1));
 
-                
             }
 
-            
         } catch (SQLException e) {
         }
     }
-
 
     public static void cerrarConexion() {
         try {
@@ -186,7 +182,6 @@ public class EjerciciosBoletin {
         // nombreAulasAlumnos();
         AlumnosAsignaturasNotas();
 
-        
         cerrarConexion();
     }
 }
