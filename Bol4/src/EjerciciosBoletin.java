@@ -1,7 +1,9 @@
 
 import java.lang.Thread.State;
+import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -150,17 +152,74 @@ public class EjerciciosBoletin {
     // Ejercicio 5_2
     public static void AlumnosAsignaturasNotas() {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Select Distinct Alumnos.nombre,Asignaturas.nombre,notas.nota from notas join alumnos on Notas.alumno =Alumnos.codigo join Asignaturas on  asignaturas.cod = notas.asignatura where notas.nota >= 5";
+            String consulta = "Select  Alumnos.nombre,Asignaturas.nombre,notas.nota from notas join alumnos on Notas.alumno =Alumnos.codigo join Asignaturas on  asignaturas.cod = notas.asignatura where notas.nota >= 5";
             System.out.println(consulta);
             ResultSet rs = st.executeQuery(consulta);
             while (rs.next()) {
-                System.out.println("Nombre: " + rs.getString(1));
+                System.out.print("Nombre:" + rs.getString(1));
+                System.out.print(" Asignaturas: "+ rs.getString(2));
+                System.out.println(" \nNotas: " + rs.getInt(3));
 
             }
 
         } catch (SQLException e) {
         }
     }
+
+    // Ejercicio 5_3
+    public static void AsignaturasVacias(){
+        try (Statement st = conexion.createStatement()) {
+            String consulta = "Select Asignaturas.nombre from asignaturas where not exists (Select asignatura from notas where asignaturas.cod = notas.asignatura)";
+             System.out.println(consulta);
+            ResultSet rs = st.executeQuery(consulta);
+            while (rs.next()) {
+                System.out.println("Nombre: " + rs.getString(1));
+
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+    // Ejercicio 6_1
+
+    private static PreparedStatement ps = null;
+
+    public static void consultar(String nombre,int altura) throws SQLException{
+        String consulta = "Select * from alumnos where nombre like ? and altura > ? ";
+        ps = conexion.prepareStatement(consulta);
+        ps.setString(1, "%a%");
+        ps.setInt(2, altura);
+        System.out.println(consulta);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            System.out.println(rs.getString(2));
+            
+        }
+
+    }
+
+    // Ejercicio 6_2
+
+    public static void consultar2(String nombre,int altura){
+        try (Statement st = conexion.createStatement()) {
+            String consulta = "Select * from alumnos where nombre like '"+ nombre+"' and altura> "+ altura;
+            System.out.println(consulta);
+            ResultSet rs = st.executeQuery(consulta);
+            while (rs.next()) {
+                System.out.println(rs.getString(2));
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR");
+        }
+    }
+
+    //Ejercicio 7
+
+    
+
+
+
 
     public static void cerrarConexion() {
         try {
@@ -170,7 +229,7 @@ public class EjerciciosBoletin {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         abrirConexion("add", "localhost", "root", "");
         // consultarAlumnos("a");
         // altaAlumnos( "lucas", "gonzalez", 185, 21);
@@ -180,7 +239,14 @@ public class EjerciciosBoletin {
         // modificarAlumnos("Denis",2);
         // modificarAsignaturas("mates",3);
         // nombreAulasAlumnos();
-        AlumnosAsignaturasNotas();
+        // AlumnosAsignaturasNotas();
+        // AsignaturasVacias();
+        // consultar("%a%", 175);
+        consultar2("%a%", 175);
+
+        
+
+
 
         cerrarConexion();
     }
