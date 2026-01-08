@@ -2,6 +2,7 @@
 import java.lang.Thread.State;
 import java.security.PublicKey;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -157,7 +158,7 @@ public class EjerciciosBoletin {
             ResultSet rs = st.executeQuery(consulta);
             while (rs.next()) {
                 System.out.print("Nombre:" + rs.getString(1));
-                System.out.print(" Asignaturas: "+ rs.getString(2));
+                System.out.print(" Asignaturas: " + rs.getString(2));
                 System.out.println(" \nNotas: " + rs.getInt(3));
 
             }
@@ -167,10 +168,10 @@ public class EjerciciosBoletin {
     }
 
     // Ejercicio 5_3
-    public static void AsignaturasVacias(){
+    public static void AsignaturasVacias() {
         try (Statement st = conexion.createStatement()) {
             String consulta = "Select Asignaturas.nombre from asignaturas where not exists (Select asignatura from notas where asignaturas.cod = notas.asignatura)";
-             System.out.println(consulta);
+            System.out.println(consulta);
             ResultSet rs = st.executeQuery(consulta);
             while (rs.next()) {
                 System.out.println("Nombre: " + rs.getString(1));
@@ -185,7 +186,7 @@ public class EjerciciosBoletin {
 
     private static PreparedStatement ps = null;
 
-    public static void consultar(String nombre,int altura) throws SQLException{
+    public static void consultar(String nombre, int altura) throws SQLException {
         String consulta = "Select * from alumnos where nombre like ? and altura > ? ";
         ps = conexion.prepareStatement(consulta);
         ps.setString(1, "%a%");
@@ -194,16 +195,16 @@ public class EjerciciosBoletin {
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             System.out.println(rs.getString(2));
-            
+
         }
 
     }
 
     // Ejercicio 6_2
 
-    public static void consultar2(String nombre,int altura){
+    public static void consultar2(String nombre, int altura) {
         try (Statement st = conexion.createStatement()) {
-            String consulta = "Select * from alumnos where nombre like '"+ nombre+"' and altura> "+ altura;
+            String consulta = "Select * from alumnos where nombre like '" + nombre + "' and altura> " + altura;
             System.out.println(consulta);
             ResultSet rs = st.executeQuery(consulta);
             while (rs.next()) {
@@ -214,12 +215,163 @@ public class EjerciciosBoletin {
         }
     }
 
-    //Ejercicio 7
+    // Ejercicio 7
 
+    // Ejercicio 8
+
+    // Ejercicio 9_A
+    public static void Datos() {
+        try {
+            DatabaseMetaData dm = conexion.getMetaData();
+            System.out.println("Nombre Driver: " + dm.getDriverName());
+            System.out.println("Version Driver: " + dm.getDriverVersion());
+            System.out.println("url de conexión: " + dm.getURL());
+            System.out.println("Usuario conectado: " + dm.getUserName());
+            System.out.println("Nombre SGBD: " + dm.getDatabaseProductName());
+            System.out.println("Version SGBD: " + dm.getDatabaseProductVersion());
+            System.out.println("Palabras Reservadas: " + dm.getSQLKeywords());
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+
+    }
+
+    // Ejercicio 9_B
+
+    public static void catalogos() {
+        try {
+            DatabaseMetaData dm = conexion.getMetaData();
+            System.out.println(dm.getCatalogs());
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+    }
+
+    // Ejercicio 9_C
+    public static void nombre_Tipo(String bd) {
+        try {
+
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet tablas = dm.getTables(bd, null, null, null);
+            while (tablas.next()) {
+                System.out.println(tablas.getString("TABLE_NAME") + " - " + tablas.getString("TABLE_TYPE"));
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+
+    }
+
+    // Ejercicio 9_D
+
+    public static void vistas(String bd) {
+        try {
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet tablas = dm.getTables(bd, null, null, null);
+            while (tablas.next()) {
+                if (tablas.getString("TABLE_TYPE").equals("VIEW")) {
+
+                    System.out.println(tablas.getString("TABLE_NAME") + " - " + tablas.getString("TABLE_TYPE"));
+                }
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+    }
+
+    // Ejercicio 9_E
+
+    public static void combinarBC(String bd) throws SQLException {
+        DatabaseMetaData dm = conexion.getMetaData();
+        ResultSet tablas = dm.getTables(bd, null, null, null);
+        System.out.println(dm.getCatalogs());
+
+        while (tablas.next()) {
+            System.out.println(tablas.getString("TABLE_NAME") + " - " + tablas.getString("TABLE_TYPE"));
+
+        }
+
+    }
+
+    // Ejercicio 9_F
+
+    public static void procedimientosAlmacenados(String bd) {
+
+        try {
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet rs = dm.getProcedures("add", null, null);
+            while (rs.next()) {
+                System.out.println(rs.getString("PROCEDURE_NAME"));
+            }
+
+        } catch (SQLException e) {
+            // TODO: handle exception
+        }
+    }
+
+    // Ejercicio 9_G
+
+    public static void datosTablas(String bd) {
+        try {
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet tablas = dm.getTables(bd, null, "a%", null);
+            while (tablas.next()) {
+                System.out.println(tablas.getString("TABLE_NAME") + " - " + tablas.getString("TABLE_TYPE"));
+                ResultSet columnas = dm.getColumns(bd, null, tablas.getString("TABLE_NAME"), null);
+
+                while (columnas.next()) {
+                    System.out.println(String.format(" %s %s %d %s %s", columnas.getString("COLUMN_NAME"),
+                            columnas.getString("TYPE_NAME"), columnas.getInt("COLUMN_SIZE"),
+                            columnas.getString("IS_NULLABLE"), columnas.getString("IS_AUTOINCREMENT")));
+                }
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error");
+        }
+
+    }
+
+    // Ejercicio 9_H
+
+    public static void clavesPrimarias(String bd) {
+        try {
+           
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet rs = dm.getPrimaryKeys("add", null, null);
+            System.out.println("Claves Primarias");
+            while (rs.next()) {
+                System.out.println(rs.getString("COLUMN_NAME"));
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+    }
+
+
+    public static void clavesForaneas(String bd){
+        try{
+
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet rs = dm.getExportedKeys("add", null, null);
     
+            System.out.println("Claves Foraneas");
+            while (rs.next()) {
+                System.out.println(rs.getString("FKCOLUMN_NAME"));
+                
+            }
 
-
-
+        }catch(SQLException e){
+            System.out.println("Error");
+        }
+    }
 
     public static void cerrarConexion() {
         try {
@@ -242,11 +394,16 @@ public class EjerciciosBoletin {
         // AlumnosAsignaturasNotas();
         // AsignaturasVacias();
         // consultar("%a%", 175);
-        consultar2("%a%", 175);
-
-        
-
-
+        // consultar2("%a%", 175);
+        // Datos();
+        // catalogos();
+        // nombre_Tipo("add");
+        // vistas("add");
+        // combinarBC("add");
+        // procedimientosAlmacenados("add");
+        // datosTablas("add");
+        clavesPrimarias("add");
+        // clavesForaneas("add");
 
         cerrarConexion();
     }
