@@ -18,7 +18,7 @@ return "Hola Rest Soy un texto";
 @Produces(MediaType.TEXT_HTML)
 public String htmlHola() {
 return "<html><title> Hola Rest</title><body>"
-+"<h1> Hola Rest</h1>"
++"<h1> Hola lugonpa</h1>"
 +"</body></html>";
 }
 // En los dos métodos siguientes el contenido se crea “a mano” y el valor
