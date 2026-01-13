@@ -7,6 +7,7 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -40,5 +41,18 @@ public class Coche {
         // Se añade el coche a la lista
         return this.coches;
         // Se devuelve la lista de coches
+    }
+
+    @GET
+    @Path("/{modelo}")
+    public String quienEres(@PathParam("modelo") String name) {
+        return "Hola, soy un " + name;
+    }
+
+    @GET
+    @Path("coche")
+    public String marcaYModelo(@DefaultValue("Renault") @QueryParam("marca") String marca,
+            @QueryParam("modelo") String modelo) {
+        return "La marca es " + marca + " y el modelo " + modelo;
     }
 }

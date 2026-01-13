@@ -1,36 +1,49 @@
-// package ejem1;
-// public class Persona implements Serializable {
-//     private int id;
-//     private String nombre;
-//     private boolean casado;
-//     private String sexo;
+package ejem1;
 
-//     public void setId(int id) {
-//         this.id = id;
-//     }
+import java.io.Serializable;
 
-//     public int getId() {
-//         return id;
-//     }
+import jakarta.xml.bind.annotation.XmlRootElement;
+@XmlRootElement
 
-//     public void setNombre(String nombre) {
-//         this.nombre = nombre;
-//     }
+public class Persona implements Serializable {
+    private int id;
+    private String nombre;
+    private boolean casado;
+    private String sexo;
+    
 
-//     public String getNombre() {
-//         return nombre;
-//     }
+    public Persona() {
+    }
 
-//     public void setCasado(boolean casado) {
-//         this.casado = casado;
-//     }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-//     public void setSexo(String sexo) {
-//         this.sexo = sexo;
-//     }
+    public int getId() {
+        return id;
+    }
+    
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-//     public String getSexo() {
-//         return sexo;
-//     }
+    public String getNombre() {
+        return nombre;
+    }
 
-// }
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+    public void setCasado(boolean casado){
+        this.casado = casado;
+    }
+    public boolean getCasado(){
+        return casado;
+    }
+    
+
+}
