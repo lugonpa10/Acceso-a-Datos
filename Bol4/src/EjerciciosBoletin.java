@@ -411,10 +411,10 @@ public class EjerciciosBoletin {
             conexion.commit();
             System.out.println("Commit realizado");
         } catch (SQLException e) {
-            System.out.println("Se ha producido un error en una consulta: " + e.getLocalizedMessage());
+            System.out.println("Error en una consulta: " + e.getLocalizedMessage());
             try {
                 if (conexion != null) {
-                    System.out.println("Se ha producido un error, deshaciendo cambios...");
+                    System.out.println("Se ha producido un error");
                     conexion.rollback();
                 }
             } catch (SQLException i) {
@@ -431,7 +431,7 @@ public class EjerciciosBoletin {
             Statement st = conexion.createStatement();
             st.executeUpdate(
                     "INSERT INTO alumnos (nombre, apellidos, altura, curso) VALUES ('Denis', 'Alonso Rodriguez', 175, 2)");
-            System.out.println("Inserción relizada correctamente");
+            System.out.println("Inserción relizada");
             conexion.commit();
             System.out.println("Commit realizado");
             st.close();
