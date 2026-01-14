@@ -1,11 +1,13 @@
 
 import java.lang.Thread.State;
 import java.security.PublicKey;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -215,9 +217,18 @@ public class EjerciciosBoletin {
         }
     }
 
-    // Ejercicio 7
-
     // Ejercicio 8
+    public static void insertarColumna(String tabla, String nombre, String tipoDato, String propiedades) {
+        try (Statement st = conexion.createStatement()) {
+            String consulta = "ALTER TABLE " + tabla + " ADD " + nombre + tipoDato + propiedades;
+            System.out.println(consulta);
+            int res = st.executeUpdate(consulta);
+            System.out.println("Columnas añadidas: " + res);
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+
+    }
 
     // Ejercicio 9_A
     public static void Datos() {
@@ -341,7 +352,7 @@ public class EjerciciosBoletin {
 
     public static void clavesPrimarias(String bd) {
         try {
-           
+
             DatabaseMetaData dm = conexion.getMetaData();
             ResultSet rs = dm.getPrimaryKeys("add", null, null);
             System.out.println("Claves Primarias");
@@ -355,21 +366,117 @@ public class EjerciciosBoletin {
         }
     }
 
-
-    public static void clavesForaneas(String bd){
-        try{
+    public static void clavesForaneas(String bd) {
+        try {
 
             DatabaseMetaData dm = conexion.getMetaData();
             ResultSet rs = dm.getExportedKeys("add", null, null);
-    
+
             System.out.println("Claves Foraneas");
             while (rs.next()) {
                 System.out.println(rs.getString("FKCOLUMN_NAME"));
-                
+
             }
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println("Error");
+        }
+    }
+
+    // Ejercicio 10
+
+    public static void obtenerDatos() {
+        try (Statement st = conexion.createStatement()) {
+            String consulta = "select *, nombre as non from alumnos";
+            ResultSet rs = st.executeQuery(consulta);
+            ResultSetMetaData rsdm = rs.getMetaData();
+            for (int i = 0; i < rsdm.getColumnCount(); i++) {
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+    }
+
+    // Ejercicio 12_1
+
+    public static void ejercicio12_1() {
+        try {
+            conexion.setAutoCommit(false);
+            Statement st = conexion.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO alumnos (nombre, apellidos, altura, curso) VALUES ('Denis', 'Alonso Rodriguez', 175, 2)");
+            System.out.println("Inserción relizada correctamente");
+            conexion.commit();
+            System.out.println("Commit realizado");
+        } catch (SQLException e) {
+            System.out.println("Se ha producido un error en una consulta: " + e.getLocalizedMessage());
+            try {
+                if (conexion != null) {
+                    System.out.println("Se ha producido un error, deshaciendo cambios...");
+                    conexion.rollback();
+                }
+            } catch (SQLException i) {
+                System.out.println("Error en el rollback: " + i.getLocalizedMessage());
+            }
+        }
+    }
+
+    // Ejercicio 12_2
+
+    public static void ejercicio12_2() {
+        try {
+            conexion.setAutoCommit(false);
+            Statement st = conexion.createStatement();
+            st.executeUpdate(
+                    "INSERT INTO alumnos (nombre, apellidos, altura, curso) VALUES ('Denis', 'Alonso Rodriguez', 175, 2)");
+            System.out.println("Inserción relizada correctamente");
+            conexion.commit();
+            System.out.println("Commit realizado");
+            st.close();
+        } catch (SQLException e) {
+            try {
+                conexion.rollback();
+            } catch (SQLException i) {
+                System.out.println("Error RollBack");
+            }
+        }
+    }
+
+    // Ejercicio 15_1
+
+    public static void ejercicio15_1() {
+        try {
+            int numeroAula = 0;
+            String nombreAula = "";
+            int puestos = 0;
+            CallableStatement cs = conexion.prepareCall("CALL getAulas(?,?)");
+            cs.setInt(1, 10);
+            cs.setString(2, "o");
+            ResultSet rs = cs.executeQuery();
+            while (rs.next()) {
+                numeroAula = rs.getInt("numero");
+                nombreAula = rs.getString("nombreAula");
+                puestos = rs.getInt("puestos");
+                System.out.println("Numero: " + numeroAula + " Nombre " + nombreAula + " Puestos " + puestos);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error SQL");
+        }
+    }
+
+    //Ejercicio 15_2
+
+    public static void ejercicio15_2() {
+        try {
+            CallableStatement cs = conexion.prepareCall("CALL SUMA()");
+            if (cs.execute()) {
+                int resultado = cs.getInt(1);
+                System.out.println("Resultado:" + resultado);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error SQL");
         }
     }
 
@@ -402,8 +509,13 @@ public class EjerciciosBoletin {
         // combinarBC("add");
         // procedimientosAlmacenados("add");
         // datosTablas("add");
-        clavesPrimarias("add");
+        // clavesPrimarias("add");
         // clavesForaneas("add");
+        // insertarColumna("prueba_mvc", "Aura", "int", "");
+        // ejercicio12_1();
+        // ejercicio12_2();
+        // ejercicio15_1();
+        // ejercicio15_2();
 
         cerrarConexion();
     }
