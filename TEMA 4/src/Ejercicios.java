@@ -1,7 +1,9 @@
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -23,6 +25,41 @@ public class Ejercicios {
             System.out.println("SQLException: " + e.getLocalizedMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("Código error: " + e.getErrorCode());
+        }
+    }
+
+    public static void getInfo(String bd){
+        try {
+            DatabaseMetaData dm = conexion.getMetaData();
+            ResultSet tablas = dm.getTables(bd, null, null, null);
+            while (tablas.next()) {
+                System.out.println(tablas.getString("TABLE_NAME") +" - " + tablas.getString("TABLE_TYPE"));
+                ResultSet columnas = dm.getColumns(bd, null, tablas.getString("TABLE_NAME"), null);
+            
+                while (columnas.next()) {
+                    System.out.println(String.format("  %s %s %d %s %s",columnas.getString("COLUMN_NAME"),columnas.getString("TYPE_NAME"),columnas.getInt("COLUMN_SIZE"),columnas.getString("IS_NULLABLE"),columnas.getString("IS_AUTOINCREMENT")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
+    }
+
+    public static void getInfoConuslta(){
+        try (Statement st = conexion.createStatement()) {
+            // String consulta = "Select * from jugadores_celta";
+            String consulta = "Select nombre,dorsal from jugadores_celta";
+            ResultSet rs = st.executeQuery(consulta);
+            ResultSetMetaData rsm = rs.getMetaData();
+            System.out.println("NUM NAME TYPE");
+            for (int i = 1; i <= rsm.getColumnCount(); i++) {
+
+                System.out.printf("%d %s %s\n",i,rsm.getColumnName(i),rsm.getColumnTypeName(i));
+                
+            }
+            
+        } catch (Exception e) {
+            // TODO: handle exception
         }
     }
 
@@ -112,9 +149,11 @@ public class Ejercicios {
         abrirConexion("celta", "localhost", "root", "");
         // consultarJugadores();
         // borrarJugador(1);
-        jugadoresEdad(30);
-        insertarManuel(99, "manuel", "Delantero", 20, "congoleño", 7, 6, 1, 3);
-        consultar(2, 29);
+        // jugadoresEdad(30);
+        // insertarManuel(99, "manuel", "Delantero", 20, "congoleño", 7, 6, 1, 3);
+        // consultar(2, 29);
+            // getInfo("celta");
+            getInfoConuslta();
         cerrarConexion();
     }
 

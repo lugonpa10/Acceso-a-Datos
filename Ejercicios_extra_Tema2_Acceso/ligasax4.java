@@ -14,11 +14,7 @@ public class ligasax4 extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         // TODO Auto-generated method stub
         cad = new String(ch, start, length);
-
-      
-
-
-
+        
     }
 
     @Override
@@ -46,7 +42,7 @@ public class ligasax4 extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         // TODO Auto-generated method stub
         super.startElement(uri, localName, qName, attributes);
-        
+
       
     }
 }
