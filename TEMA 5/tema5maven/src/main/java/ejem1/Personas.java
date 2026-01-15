@@ -8,7 +8,9 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/personas")
 public class Personas {
@@ -44,7 +46,23 @@ public class Personas {
 
     }
 
-    // @GET
-    // @Path("/buscar")
+    @GET
+    @Path("/buscar")
+    @Produces((MediaType.APPLICATION_JSON))
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response ver2(@QueryParam("nombre") String cadena) {
+        ArrayList<Persona> personaConPatron = new ArrayList<>();
+        for (Persona p : personas) {
+            if (p.getNombre().toLowerCase().contains(cadena)) {
+                personaConPatron.add(p);
+            }
+
+        }
+        return Response.ok(personaConPatron).build();
+
+    }
+    
+    
+
 
 }
