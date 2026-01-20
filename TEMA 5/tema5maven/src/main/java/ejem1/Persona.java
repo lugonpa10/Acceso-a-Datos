@@ -14,6 +14,13 @@ public class Persona implements Serializable {
 
     public Persona() {
     }
+    public Persona(int id,String nombre,String sexo,boolean casado) {
+        super();
+        this.id = id;
+        this.nombre = nombre;
+        this.casado = casado;
+        this.sexo = sexo;
+    }
 
     public void setId(int id) {
         this.id = id;
