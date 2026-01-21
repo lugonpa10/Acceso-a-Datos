@@ -466,7 +466,7 @@ public class EjerciciosBoletin {
         }
     }
 
-    //Ejercicio 15_2
+    // Ejercicio 15_2
 
     public static void ejercicio15_2() {
         try {
@@ -475,6 +475,41 @@ public class EjerciciosBoletin {
                 int resultado = cs.getInt(1);
                 System.out.println("Resultado:" + resultado);
             }
+        } catch (SQLException e) {
+            System.out.println("Error SQL");
+        }
+    }
+
+    // Ejercicio 16
+
+    public static void ejercicio16(String textoBuscado, String bd) {
+        try {
+            DatabaseMetaData dbmd = conexion.getMetaData();
+            ResultSet tablas = dbmd.getTables(bd, null, "%", new String[] { "TABLE" });
+            while (tablas.next()) {
+                String nombreTabla = tablas.getString("TABLE_NAME");
+                ResultSet columnas = dbmd.getColumns(bd, null, nombreTabla, "%");
+                while (columnas.next()) {
+                    String nombreColumna = columnas.getString("COLUMN_NAME");
+                    String tipo = columnas.getString("TYPE_NAME");
+                    if (tipo.equalsIgnoreCase("CHAR") || tipo.equalsIgnoreCase("VARCHAR")) {
+                        String sql = "SELECT " + nombreColumna + " FROM " + nombreTabla + " WHERE " + nombreColumna
+                                + " LIKE ?";
+                        PreparedStatement ps = conexion.prepareStatement(sql);
+                        ps.setString(1, "%" + textoBuscado + "%");
+                        ResultSet rs = ps.executeQuery();
+                        while (rs.next()) {
+                            String valor = rs.getString(1);
+                            System.out.println("BD: " + bd + " | Tabla: " + nombreTabla + " | Columna: " + nombreColumna
+                                    + " | Valor: " + valor);
+                        }
+                        rs.close();
+                        ps.close();
+                    }
+                }
+                columnas.close();
+            }
+            tablas.close();
         } catch (SQLException e) {
             System.out.println("Error SQL");
         }
