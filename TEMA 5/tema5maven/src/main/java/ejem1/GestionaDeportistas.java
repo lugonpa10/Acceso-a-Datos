@@ -25,6 +25,10 @@ public class GestionaDeportistas {
     private static final String USER = "root";
     private static final String PASS = "";
     public static ArrayList<Deportista> listaDeportistas = new ArrayList<>();
+    public static ArrayList<Deportista> listaMasculinos = new ArrayList<>();
+    public static ArrayList<Deportista> listaFemeninos = new ArrayList<>();
+    public static ArrayList<Deportista> listaGeneral = new ArrayList<>();
+
     Deportista deportista;
 
     @GET
@@ -102,7 +106,7 @@ public class GestionaDeportistas {
             Class.forName("org.mariadb.jdbc.Driver");
             try (Connection conexion = DriverManager.getConnection(URL, USER, PASS)) {
                 Statement st = conexion.createStatement();
-              ResultSet rs = st.executeQuery("SELECT * FROM deportistas WHERE deporte = '" + nombreDeporte + "'");
+                ResultSet rs = st.executeQuery("SELECT * FROM deportistas WHERE deporte = '" + nombreDeporte + "'");
                 while (rs.next()) {
                     listaDeportistas.add(new Deportista(rs.getInt("id"),
                             rs.getString("nombre"),
@@ -119,15 +123,15 @@ public class GestionaDeportistas {
             }
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se encuentra el driver").build();
-           
+
         }
 
     }
 
     @Path("/activos")
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response activos(){
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response activos() {
         try {
 
             Class.forName("org.mariadb.jdbc.Driver");
@@ -160,8 +164,8 @@ public class GestionaDeportistas {
 
     @Path("/retirados")
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response retirados(){
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response retirados() {
         try {
 
             Class.forName("org.mariadb.jdbc.Driver");
@@ -192,17 +196,20 @@ public class GestionaDeportistas {
         }
     }
 
-     @Path("/masculinos")
+    @Path("/masculinos")
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response masculinos(){
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response masculinos() {
         try {
 
             Class.forName("org.mariadb.jdbc.Driver");
 
             try (Connection conexion = DriverManager.getConnection(URL, USER, PASS)) {
                 Statement st = conexion.createStatement();
-                ResultSet rs = st.executeQuery("Select * from deportistas where genero=");
+                String genero = "Masculino";
+                String consulta = "Select * from deportistas where genero='" + genero + "'";
+                ResultSet rs = st.executeQuery(consulta);
+
                 while (rs.next()) {
                     listaDeportistas.add(new Deportista(rs.getInt("id"),
                             rs.getString("nombre"),
@@ -226,6 +233,87 @@ public class GestionaDeportistas {
         }
     }
 
+    @Path("/femeninos")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response femeninos() {
+        try {
 
+            Class.forName("org.mariadb.jdbc.Driver");
+
+            try (Connection conexion = DriverManager.getConnection(URL, USER, PASS)) {
+                Statement st = conexion.createStatement();
+                String genero = "Femenino";
+
+                ResultSet rs = st.executeQuery("Select * from deportistas where genero='" + genero + "'");
+                while (rs.next()) {
+                    listaDeportistas.add(new Deportista(rs.getInt("id"),
+                            rs.getString("nombre"),
+                            rs.getBoolean("activo"),
+                            rs.getString("deporte"),
+                            rs.getString("genero")));
+                }
+
+                GenericEntity<List<Deportista>> entity = new GenericEntity<List<Deportista>>(listaDeportistas) {
+                };
+
+                return Response.ok(entity).build();
+
+            } catch (SQLException e) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error SQL")
+                        .build();
+
+            }
+        } catch (ClassNotFoundException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se encuentra el driver").build();
+        }
+    }
+
+    @Path("/xg")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deportesPorGenero() {
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            try (Connection conexion = DriverManager.getConnection(URL, USER, PASS)) {
+                Statement st = conexion.createStatement();
+                String consulta = "Select * from deportistas";
+                ResultSet rs = st.executeQuery(consulta);
+                while (rs.next()) {
+                    listaGeneral.add(new Deportista(rs.getInt("id"),
+                            rs.getString("nombre"),
+                            rs.getBoolean("activo"),
+                            rs.getString("deporte"),
+                            rs.getString("genero")));
+
+                }
+
+                ArrayList<Deportista> listaFinal = new ArrayList<>();
+
+                for (Deportista d : listaGeneral) {
+                    if (d.getGenero().equals("Masculino")) {
+                        listaFinal.add(d);
+
+                    }
+
+                }
+                for (Deportista d : listaGeneral) {
+                    if (d.getGenero().equals("Femenino")) {
+                        listaFinal.add(d);
+
+                    }
+
+                }
+                return Response.ok(listaFinal).build();
+
+            } catch (SQLException e) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error SQL")
+                        .build();
+            }
+        } catch (ClassNotFoundException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se encuentra el driver").build();
+
+        }
+    }
 
 }
