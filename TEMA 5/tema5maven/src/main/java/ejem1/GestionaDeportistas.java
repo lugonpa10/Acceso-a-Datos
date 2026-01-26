@@ -10,7 +10,9 @@ import java.util.List;
 
 import org.mariadb.jdbc.export.ExceptionFactory.SqlExceptionFactory;
 
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -31,39 +33,26 @@ public class GestionaDeportistas {
 
     Deportista deportista;
 
-    @GET
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Response obtenerTodos() {
+    @Path("/android")
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON })
+    public Response subirDeportistaAndroid(Deportista d) throws ClassNotFoundException {
 
         try {
 
             Class.forName("org.mariadb.jdbc.Driver");
 
-            try (Connection conexion = DriverManager.getConnection(URL, USER, PASS)) {
-                Statement st = conexion.createStatement();
-                ResultSet rs = st.executeQuery("Select * from deportistas");
-                while (rs.next()) {
-                    listaDeportistas.add(new Deportista(rs.getInt("id"),
-                            rs.getString("nombre"),
-                            rs.getBoolean("activo"),
-                            rs.getString("deporte"),
-                            rs.getString("genero")));
-                }
+            Connection conexion = DriverManager.getConnection(URL, USER, PASS);
+            Statement st = conexion.createStatement();
+            st.executeUpdate("Insert into deportistas(nombre,deporte) VALUES ('" + d.getNombre()+"','"+ d.getDeporte()+ "')");
 
-                GenericEntity<List<Deportista>> entity = new GenericEntity<List<Deportista>>(listaDeportistas) {
-                };
+            return Response.ok("Subido Correctamente").build();
 
-                return Response.ok(entity).build();
+        } catch (SQLException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error SQL")
+                    .build();
 
-            } catch (SQLException e) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error SQL")
-                        .build();
-
-            }
-        } catch (ClassNotFoundException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se encuentra el driver").build();
         }
-
     }
 
     @Path("/{id}")
